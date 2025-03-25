@@ -54,3 +54,19 @@ class TestParentNode(unittest.TestCase):
         node = ParentNode("b", [inner_parent, leaf3])
         test_str = "<b><b><div>leaf1</div><b>leaf2</b></b><p>leaf3</p></b>"
         self.assertEqual(node.to_html(), test_str)
+
+    def test_multiple_props(self):
+        child_node = LeafNode("span", "child")
+        props = {
+            "class": "container",
+            "id": "main",
+            "data-test": "test-div"
+        }
+        node = ParentNode("div", [child_node], props)
+        # The order of props might vary, so we'll check parts of the string
+        html = node.to_html()
+        self.assertTrue(html.startswith("<div "))
+        self.assertTrue(html.endswith("><span>child</span></div>"))
+        self.assertTrue('class="container"' in html)
+        self.assertTrue('id="main"' in html)
+        self.assertTrue('data-test="test-div"' in html)
